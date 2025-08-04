@@ -23,8 +23,8 @@ pipeline {
                 echo 'Deploying application...'
                 script {
                     sh """
-                        docker build -t static-website
-                        docker run -d --name my-website -p 8080:80 static-website
+                        sudo docker build -t static-website .
+                        sudo docker run -d --name webapp -p 8083:80 static-website
                     """
                 }
             }
