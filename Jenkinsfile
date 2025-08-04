@@ -1,6 +1,6 @@
 pipeline {
     agent any
-    
+
     stages {
         stage('Checkout') {
             steps {
@@ -8,30 +8,40 @@ pipeline {
                 checkout scm
             }
         }
-        
+
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
                 script {
-                    //docker.build("static-website:${BUILD_NUMBER}")
+                    dockerImage = docker.build("static-website:${BUILD_NUMBER}")
                 }
             }
         }
-        
+
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
                 script {
-                    sudo docker build -t static-website .
-                    sudo docker run -d --name webapp -p 8083:80 static-website
+                    // Stop and remove any existing container named 'webapp'
+                    sh '''
+                        if [ "$(docker ps -aq -f name=webapp)" ]; then
+                            docker stop webapp || true
+                            docker rm webapp || true
+                        fi
+                    '''
+
+                    // Run the container
+                    sh '''
+                        docker run -d --name webapp -p 8083:80 static-website:${BUILD_NUMBER}
+                    '''
                 }
             }
         }
     }
-    
+
     post {
         always {
-            echo 'Cleaning up...'
+            echo 'Cleaning up workspace...'
             cleanWs()
         }
     }
