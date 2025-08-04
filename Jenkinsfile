@@ -13,7 +13,7 @@ pipeline {
             steps {
                 echo 'Building Docker image...'
                 script {
-                    docker.build("static-website:${BUILD_NUMBER}")
+                    //docker.build("static-website:${BUILD_NUMBER}")
                 }
             }
         }
@@ -23,9 +23,8 @@ pipeline {
                 echo 'Deploying application...'
                 script {
                     sh """
-                        docker stop test-website || true
-                        docker rm test-website || true
-                        docker run -d --name test-website -p 8083:80 static-website:${BUILD_NUMBER}
+                        docker build -t static-website
+                        docker run -d --name my-website -p 8080:80 static-website
                     """
                 }
             }
