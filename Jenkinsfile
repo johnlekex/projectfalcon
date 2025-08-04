@@ -25,7 +25,7 @@ pipeline {
                     sh """
                         docker stop test-website || true
                         docker rm test-website || true
-                        docker run -d --name test-website -p 8080:80 static-website:${BUILD_NUMBER}
+                        docker run -d --name test-website -p 8083:80 static-website:${BUILD_NUMBER}
                     """
                 }
             }
