@@ -11,7 +11,7 @@ COPY . /usr/share/nginx/html/
 EXPOSE 80
 
 # Add labels for better organization
-LABEL maintainer="your-email@example.com"
+LABEL maintainer="jrqualitylimited@gmail.com"
 LABEL description="Static Website with CI/CD Pipeline"
 LABEL version="1.0"
 
