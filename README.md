@@ -62,7 +62,7 @@ open http://localhost:8080
    - Under "Pipeline" section:
      - Definition: "Pipeline script from SCM"
      - SCM: Git
-     - Repository URL: `your-git-repository-url`
+     - Repository URL: `https://github.com/johnlekex/projectfalcon.git`
      - Script Path: `Jenkinsfile`
 
 3. **Set Up Webhooks** (Optional):
