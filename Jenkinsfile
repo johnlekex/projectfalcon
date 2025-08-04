@@ -1,5 +1,14 @@
 pipeline {
-    agent any
+    agent {
+        docker {
+            image 'docker:24.0.5' // Docker CLI image
+            args '-v /var/run/docker.sock:/var/run/docker.sock'
+        }
+    }
+
+    environment {
+        DOCKER_IMAGE = "static-website:${BUILD_NUMBER}"
+    }
 
     stages {
         stage('Checkout') {
@@ -12,29 +21,23 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 echo 'Building Docker image...'
-                script {
-                    dockerImage = docker.build("static-website:${BUILD_NUMBER}")
-                }
+                sh 'docker build -t $DOCKER_IMAGE .'
             }
         }
 
         stage('Deploy') {
             steps {
                 echo 'Deploying application...'
-                script {
-                    // Stop and remove any existing container named 'webapp'
-                    sh '''
-                        if [ "$(docker ps -aq -f name=webapp)" ]; then
-                            docker stop webapp || true
-                            docker rm webapp || true
-                        fi
-                    '''
+                sh '''
+                    # Stop and remove existing container if it exists
+                    if [ "$(docker ps -aq -f name=webapp)" ]; then
+                        docker stop webapp || true
+                        docker rm webapp || true
+                    fi
 
-                    // Run the container
-                    sh '''
-                        docker run -d --name webapp -p 8083:80 static-website:${BUILD_NUMBER}
-                    '''
-                }
+                    # Run the container
+                    docker run -d --name webapp -p 8083:80 $DOCKER_IMAGE
+                '''
             }
         }
     }
