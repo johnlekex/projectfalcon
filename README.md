@@ -195,3 +195,14 @@ The CI/CD pipeline will automatically test your changes when you push to a branc
 ## License
 
 This project is for educational purposes and demonstrates CI/CD concepts with Jenkins and Docker.
+
+
+
+
+
+## Remove all running containers
+docker rmi -f $(docker images -aq)
+
+## Remove all docker images
+docker rm -f $(docker ps -aq)
+
